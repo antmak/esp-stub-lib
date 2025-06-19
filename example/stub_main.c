@@ -47,7 +47,7 @@ static  __attribute__((unused)) int handle_test1(va_list ap)
     extern int32_t __bswapsi2(int32_t x);
     (void)__bswapsi2(0x77AAFF33);
 
-    return 0;
+    return ESP_STUB_OK;
 }
 
 static  __attribute__((unused)) int handle_test2(va_list ap)
@@ -58,7 +58,7 @@ static  __attribute__((unused)) int handle_test2(va_list ap)
     strcpy(buf, "test2\n");
     STUB_LOG(buf);
 
-    return 0;
+    return ESP_STUB_OK;
 }
 
 static const struct stub_cmd_handler cmd_handlers[] = {
@@ -83,7 +83,7 @@ int stub_main(int cmd, ...)
 {
     va_list ap;
     void *flash_state = NULL;
-    int ret = ESP_STUB_FAIL;
+    int ret = ESP_STUB_ERR_NOT_SUPPORTED;
     stub_lib_err_t rc = STUB_LIB_FAIL;
 
     /* zero bss */
@@ -100,12 +100,12 @@ int stub_main(int cmd, ...)
         return ESP_STUB_FAIL;
     }
 
-    STUB_LOGI("Command: 0x%x\n", cmd);
+    STUB_LOGD("Command: 0x%x\n", cmd);
 
     const struct stub_cmd_handler *handler = cmd_handlers;
     while (handler->handler) {
         if (handler->cmd == cmd) {
-            STUB_LOGI("Executing command: %s\n", handler->name);
+            STUB_LOGI("Executing command: %s (0x%x)\n", handler->name, handler->cmd);
             ret = handler->handler(ap);
             if (ret != ESP_STUB_OK) {
                 STUB_LOGE("Command %s (0x%x) failed\n", handler->name, handler->cmd);
@@ -117,7 +117,7 @@ int stub_main(int cmd, ...)
     }
 
     if (!handler->handler) {
-        STUB_LOGE("Unknown command (0x%x)!\n", cmd);
+        STUB_LOGE("Unknown command: 0x%x\n", cmd);
     }
 
 flash_va_end:
