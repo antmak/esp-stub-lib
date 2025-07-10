@@ -7,6 +7,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <err.h>
 
 typedef struct esp_rom_spiflash_chip {
     uint32_t flash_id;
@@ -22,3 +23,4 @@ uint32_t stub_target_flash_get_flash_id(void);
 const esp_rom_spiflash_chip_t *stub_target_flash_get_config(void);
 void stub_target_flash_update_config(uint32_t flash_id, uint32_t flash_size);
 uint32_t stub_target_flash_id_to_flash_size(uint32_t flash_id);
+stub_lib_err_t stub_target_flash_read_buff(uint32_t addr, void *buffer, uint32_t size);

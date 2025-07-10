@@ -15,6 +15,8 @@ stub_lib_err_t stub_lib_flash_init(void **state)
     STUB_LOG_TRACE();
 
     stub_target_flash_init();
+
+    //TODO Do we have to update flash id and flash size every time?
     uint32_t flash_id = stub_target_flash_get_flash_id();
     uint32_t flash_size = stub_target_flash_id_to_flash_size(flash_id);
     if (flash_size == 0) {
@@ -63,4 +65,9 @@ void stub_lib_flash_info_print(const stub_lib_flash_info_t *info)
               info->mode,
               info->encrypted
              );
+}
+
+stub_lib_err_t stub_lib_flash_read_buff(uint32_t addr, void *buffer, uint32_t size)
+{
+    return stub_target_flash_read_buff(addr, buffer, size);
 }
